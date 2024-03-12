@@ -8,8 +8,9 @@
     "Alexandre Debris <alexandre@debris.ovh>"
   ],
   "contact": {
-    "homepage": "https://fabricmc.net/",
-    "sources": "https://github.com/FabricMC/fabric-example-mod"
+    "homepage": "https://debris.ovh/",
+    "sources": "https://github.com/Thesam1798/tutorial-mod-minecraft",
+    "version": "https://api.github.com/repos/Thesam1798/tutorial-mod-minecraft/releases"
   },
   "license": "CC0-1.0",
   "icon": "assets/tutorialmod/icon.png",
