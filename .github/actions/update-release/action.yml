@@ -1,0 +1,37 @@
+name: Update Release
+description: "Update the release with the latest artifact"
+
+inputs:
+  GITHUB_TOKEN:
+    description: "The GitHub token to use for the checkout"
+    required: true
+  RELEASE_TAG_NAME:
+    description: "Release tag name"
+    required: true
+    # github.event.release.tag_name
+
+runs:
+  using: "composite"
+  steps:
+    - name: Update Release
+      shell: bash
+      run: |
+        release_description=$(gh release view ${{ inputs.RELEASE_TAG_NAME }} --json body -q .body)
+        download_links=""
+
+        for file in ./build/libs/*; do
+          if [[ $file == *".jar" ]] && [[ $file != *"-sources.jar" ]]; then
+            asset_name=$(basename $file)
+
+            echo "Uploading $asset_name"
+            gh release upload ${{ inputs.RELEASE_TAG_NAME }} $file
+
+            download_link="[${asset_name}](https://github.com/${{ github.repository }}/releases/download/${{ inputs.RELEASE_TAG_NAME }}/${asset_name})"
+            download_links+="$download_link\n"
+          fi
+        done
+
+        updated_description="${release_description}\n\nDownload Links:\n$download_links"
+        gh release edit ${{ inputs.RELEASE_TAG_NAME }} -F <(echo -e "$updated_description") --draft=false
+      env:
+        GITHUB_TOKEN: ${{ inputs.GITHUB_TOKEN }}

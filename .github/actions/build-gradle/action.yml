@@ -1,0 +1,42 @@
+name: Build Gradle
+description: "Builds a Gradle project using the Gradle Wrapper"
+
+inputs:
+  JAVA_VERSION:
+    description: "The version of Java to use for the build"
+    required: false
+    default: "21"
+  CACHE_KEY:
+    description: "The cache key to use for the build cache"
+    required: false
+    default: gradle-${{ hashFiles('**/build.gradle') }}
+
+runs:
+  using: "composite"
+  steps:
+    - name: Setup cache
+      uses: actions/cache@v3
+      with:
+        path: |
+          ~/.gradle
+          ~/build
+        key: ${{ inputs.CACHE_KEY }}
+        restore-keys: |
+          gradle-
+
+    - name: validate gradle wrapper
+      uses: gradle/wrapper-validation-action@v1
+
+    - name: setup jdk
+      uses: actions/setup-java@v4
+      with:
+        java-version: ${{ inputs.JAVA_VERSION }}
+        distribution: 'temurin'
+
+    - name: make gradle wrapper executable
+      shell: bash
+      run: chmod +x ./gradlew
+
+    - name: build
+      shell: bash
+      run: ./gradlew build

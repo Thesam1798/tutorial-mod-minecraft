@@ -1,0 +1,32 @@
+name: Init and Pull
+description: "Initializes the repository and pulls the latest changes"
+
+inputs:
+  GITHUB_TOKEN:
+    description: "The GitHub token to use for the checkout"
+    required: true
+  GPG_SIGNING_KEY:
+    description: "The GPG signing key to use for signing the commits"
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - uses: actions/checkout@v4
+      with:
+        token: ${{ inputs.GITHUB_TOKEN }}
+        fetch-depth: 0 # Important pour récupérer tout l'historique
+
+    - name: Configure Git
+      shell: bash
+      run: |
+        git config user.name "Alexandre Debris"
+        git config user.email "alexandre@debris.ovh"
+        git config commit.gpgsign true
+
+    - name: Configure GPG Key
+      shell: bash
+      run: |
+        echo -n "$GPG_SIGNING_KEY" | base64 --decode | gpg --import
+      env:
+        GPG_SIGNING_KEY: ${{ inputs.GPG_SIGNING_KEY }}

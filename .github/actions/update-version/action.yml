@@ -1,0 +1,43 @@
+name: Update Version
+description: "Updates the mod version in the gradle.properties file and pushes the changes to the repository"
+
+inputs:
+  TAG_VERSION:
+    description: "The version to update the mod to"
+    required: true
+  PUSH_CHANGES:
+    description: "If the changes should be pushed to the repository"
+    required: false
+    default: "true"
+
+runs:
+  using: "composite"
+  steps:
+    - name: Create Branch and Update Version File
+      shell: bash
+      run: |
+        git checkout -b update-version-${{ inputs.TAG_VERSION }}
+        CURRENT_VERSION=$(grep 'mod_version=' gradle.properties | cut -d'=' -f2)
+        if [ "$CURRENT_VERSION" != "${{ inputs.TAG_VERSION }}" ]; then
+          sed -i "s/mod_version=$CURRENT_VERSION/mod_version=${{ inputs.TAG_VERSION }}/g" gradle.properties
+          echo "changed=true" >> $GITHUB_ENV
+        else
+          echo "changed=false" >> $GITHUB_ENV
+        fi
+
+    - name: Commit, Tag, and Push Changes
+      shell: bash
+      if: env.changed == 'true' && inputs.PUSH_CHANGES == 'true'
+      run: |
+        git add gradle.properties
+        git commit -m "🚑️ fix(version): Update mod version to ${{ inputs.TAG_VERSION }}"
+        git tag -fa ${{ inputs.TAG_VERSION }} -m "🚑️ fix(version): Update mod version to ${{ inputs.TAG_VERSION }}"
+        git push origin update-version-${{ inputs.TAG_VERSION }}
+        git push origin :refs/tags/${{ env.TAG_VERSION }}
+        git push origin ${{ inputs.TAG_VERSION }}
+
+    - name: Delete Temporary Branch
+      shell: bash
+      if: env.changed == 'true' && inputs.PUSH_CHANGES == 'true'
+      run: |
+        git push origin --delete update-version-${{ inputs.TAG_VERSION }}
