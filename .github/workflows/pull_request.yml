@@ -6,6 +6,10 @@ on:
 
 jobs:
   pull_request_checks:
+    permissions:
+      contents: read
+      security-events: write
+      actions: read
     runs-on: ubuntu-latest
     steps:
       - name: Check for unchecked tasks in PR body

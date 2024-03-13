@@ -6,6 +6,10 @@ on:
 
 jobs:
   release:
+    permissions:
+      contents: read
+      security-events: write
+      actions: read
     runs-on: ubuntu-latest
     steps:
       - name: Init
@@ -28,7 +32,7 @@ jobs:
         uses: Thesam1798/tutorial-mod-minecraft/.github/actions/build-gradle@master
 
       - name: Synk Security
-        uses: Thesam1798/tutorial-mod-minecraft/.github/actions/synk@master
+        uses: Thesam1798/tutorial-mod-minecraft/.github/actions/snyk@master
         with:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
           SNYK_ORG: ${{ secrets.SNYK_ORG }}
