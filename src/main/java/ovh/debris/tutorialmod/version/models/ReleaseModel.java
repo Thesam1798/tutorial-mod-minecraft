@@ -1,8 +1,8 @@
-package ovh.debris.tutorialmod.version;
+package ovh.debris.tutorialmod.version.models;
 
 import com.google.gson.annotations.SerializedName;
 
-public class ReleaseInfo {
+public class ReleaseModel {
     @SerializedName("tag_name")
     public String tagName;
 
