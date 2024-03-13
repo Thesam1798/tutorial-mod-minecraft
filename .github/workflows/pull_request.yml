@@ -14,5 +14,18 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.PERSONAL_GITHUB_TOKEN }}
           GPG_SIGNING_KEY: ${{ secrets.GPG_SIGNING_KEY }}
 
+      - name: Check for unchecked tasks in PR body
+        shell: bash
+        run: |
+          PR_BODY=$(curl -s -H "Authorization: token $GITHUB_TOKEN" \
+            "https://api.github.com/repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}" | jq -r .body)
+
+          if echo "$PR_BODY" | grep -q "\- \[ \]"; then
+            echo "All tasks must be checked before merging."
+            exit 1
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.PERSONAL_GITHUB_TOKEN }}
+
       - name: Build
         uses: Thesam1798/tutorial-mod-minecraft/.github/actions/build-gradle@master
