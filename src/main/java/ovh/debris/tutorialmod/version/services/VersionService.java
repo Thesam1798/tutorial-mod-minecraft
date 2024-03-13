@@ -51,6 +51,7 @@ public class VersionService {
         List<ReleaseModel> releaseInfo = getLatestVersion();
         String versionType = "unknown";
         String versionNumber = "unknown";
+        boolean isUpdateAvailable = false;
 
         if (releaseInfo != null) {
             ReleaseModel lastRelease = releaseInfo.stream().max(Comparator.comparing(release -> ZonedDateTime.parse(release.publishedAt, DateTimeFormatter.ISO_DATE_TIME))).orElse(null);
@@ -60,6 +61,7 @@ public class VersionService {
                 Semver latestVersion = new Semver(lastRelease.tagName);
 
                 if (latestVersion.isGreaterThan(currentVersion)) {
+                    isUpdateAvailable = true;
                     if (latestVersion.getMajor() > currentVersion.getMajor()) {
                         versionType = "major";
                     } else if (latestVersion.getMinor() > currentVersion.getMinor()) {
@@ -76,7 +78,7 @@ public class VersionService {
             }
         }
 
-        return new VersionModel(versionType, versionNumber, versionNumber.compareTo(TutorialMod.MOD_VERSION) > 0);
+        return new VersionModel(versionType, versionNumber, isUpdateAvailable);
     }
 
     public static void UpdateGlobalModInfo() {

@@ -33,9 +33,13 @@ public class TutorialMod implements ModInitializer {
         TutorialMod.MOD_IS_UPDATE_AVAILABLE = versionInfo.isUpdateAvailable();
         TutorialMod.MOD_UPDATE_VALUE = versionInfo.getVersionType();
 
-        if (MOD_IS_UPDATE_AVAILABLE) {
+        if (MOD_IS_UPDATE_AVAILABLE && !MOD_VERSION.equals("0.0.0-DEV")) {
             LOGGER.warn("An update is available {} (last version: {})", MOD_VERSION, MOD_LAST_VERSION);
             LOGGER.warn("The superior version is a : {}", MOD_UPDATE_VALUE);
+        } else if (MOD_VERSION.equals("0.0.0-DEV")) {
+            LOGGER.warn("You are using a development version, please be careful");
+        } else {
+            LOGGER.info("You are using the latest version of the mod");
         }
 
         LOGGER.info("Loaded successfully on {}ms", System.currentTimeMillis() - startTime);
