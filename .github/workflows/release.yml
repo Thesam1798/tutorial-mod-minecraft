@@ -5,7 +5,7 @@ on:
     types: [created]
 
 jobs:
-  build:
+  release:
     runs-on: ubuntu-latest
     steps:
       - name: Init
@@ -27,9 +27,14 @@ jobs:
       - name: Build
         uses: Thesam1798/tutorial-mod-minecraft/.github/actions/build-gradle@master
 
+      - name: Synk Security
+        uses: Thesam1798/tutorial-mod-minecraft/.github/actions/synk@master
+        with:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+          SNYK_ORG: ${{ secrets.SNYK_ORG }}
+
       - name: Update Release
         uses: Thesam1798/tutorial-mod-minecraft/.github/actions/update-release@master
         with:
           GITHUB_TOKEN: ${{ secrets.PERSONAL_GITHUB_TOKEN }}
           RELEASE_TAG_NAME: ${{ github.event.release.tag_name }}
-

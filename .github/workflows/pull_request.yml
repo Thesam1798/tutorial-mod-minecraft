@@ -5,15 +5,9 @@ on:
     types: [opened, synchronize, reopened, edited, ready_for_review]
 
 jobs:
-  build:
+  pull_request_checks:
     runs-on: ubuntu-latest
     steps:
-      - name: Init
-        uses: Thesam1798/tutorial-mod-minecraft/.github/actions/init@master
-        with:
-          GITHUB_TOKEN: ${{ secrets.PERSONAL_GITHUB_TOKEN }}
-          GPG_SIGNING_KEY: ${{ secrets.GPG_SIGNING_KEY }}
-
       - name: Check for unchecked tasks in PR body
         shell: bash
         run: |
@@ -27,5 +21,17 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.PERSONAL_GITHUB_TOKEN }}
 
+      - name: Init
+        uses: Thesam1798/tutorial-mod-minecraft/.github/actions/init@master
+        with:
+          GITHUB_TOKEN: ${{ secrets.PERSONAL_GITHUB_TOKEN }}
+          GPG_SIGNING_KEY: ${{ secrets.GPG_SIGNING_KEY }}
+
       - name: Build
         uses: Thesam1798/tutorial-mod-minecraft/.github/actions/build-gradle@master
+
+      - name: Synk Security
+        uses: Thesam1798/tutorial-mod-minecraft/.github/actions/synk@master
+        with:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+          SNYK_ORG: ${{ secrets.SNYK_ORG }}
