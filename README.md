@@ -13,6 +13,8 @@ Ce project est un mod Minecraft suivant un tutoriel pour apprendre à créer des
 ## Configuration des secrets
 Ce projet utilise GitHub Actions qui nécessitent la configuration des secrets suivants :
 
+- `SNYK_TOKEN` : Un token [snyk](https://snyk.io/) pour la vérification des dépendances et des vulnérabilités.
+- `SNYK_ORG` : Organisation id de [snyk](https://snyk.io/).
 - `PERSONAL_GITHUB_TOKEN` : Un token GitHub utilisé pour les opérations nécessitant une authentification, telles que le push sur le répository, la création d'issues et de Pull Requests (PR).
 - `GPG_SIGNING_KEY` : La clé de signature GPG utilisée pour signer les commits et les tags. Assure l'intégrité et la vérification de l'auteur des commits.
 
